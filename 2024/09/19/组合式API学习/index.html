@@ -89,20 +89,68 @@ replay-btn" aria-hidden="true"></i></a>
     <hr>
   </div>
   <div class="post-content">
-    <h3 id="组合式API学习"><a href="#组合式API学习" class="headerlink" title="组合式API学习"></a>组合式API学习</h3><p>由下代码可做简化</p>
+    <h3 id="组合式API学习"><a href="#组合式API学习" class="headerlink" title="组合式API学习"></a>组合式API学习</h3><h4 id="setup-函数"><a href="#setup-函数" class="headerlink" title="setup()函数"></a>setup()函数</h4><p>由下代码可做简化</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">setup()&#123;</span><br><span class="line">const message = &#x27;this&#x27;</span><br><span class="line">const logmessage = () =&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">return &#123;</span><br><span class="line">message,</span><br><span class="line">logmessage</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">beforeCreate()&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 
 <p>简化后</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line"> const message = &#x27;this&#x27;</span><br><span class="line"> const logmessage = () =&gt; &#123;</span><br><span class="line"> </span><br><span class="line"> &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 
 <ol>
-<li><p>setup选项在beforeCreate钩子之前自动执行</p>
+<li>setup选项在beforeCreate钩子之前自动执行</li>
+<li>setup写代码，用定义数据 + 函数，然后以对象方式return</li>
+<li><code>&lt;script setup&gt;</code>经过语法糖的封装更简单的使用组合式API</li>
+<li>setup中的this指向undefined</li>
+</ol>
+<h4 id="reactive-和ref-函数"><a href="#reactive-和ref-函数" class="headerlink" title="reactive()和ref()函数"></a>reactive()和ref()函数</h4><ul>
+<li>reactive()函数：接受对象类型数据的参数传入并返回一个响应式的对象</li>
+<li>ref()函数：接受简单类型或者对象类型数据的参数传入并返回一个响应式的对象（推荐使用）</li>
+</ul>
+<ol>
+<li><pre><code>&lt;script setup&gt;
+    import &#123; reactive &#125; from &#39;vue&#39;
+    const state = reactive (&#123;
+    count:0
+    &#125;)
+    const setCount = () =&gt; &#123;
+    state.count++
+    &#125;
+&lt;/script&gt;
+&lt;template&gt;
+&lt;div&gt;
+    &lt;button @click=&#39;setCount&#39;&gt;&#123;&#123; state.count &#125;&#125;&lt;/button&gt;
+&lt;/div&gt;
+&lt;/template&gt;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. ```</span><br><span class="line">   &lt;script setup&gt;</span><br><span class="line">   	import &#123; ref &#125; from &#x27;vue&#x27;</span><br><span class="line">   	const state = ref(0)</span><br><span class="line">   	const setCount = () =&gt; &#123;</span><br><span class="line">   	state.value++</span><br><span class="line">   	&#125;</span><br><span class="line">   &lt;/script&gt;</span><br><span class="line">   &lt;template&gt;</span><br><span class="line">   &lt;div&gt;</span><br><span class="line">   	&lt;button @click=&#x27;setCount&#x27;&gt;&#123;&#123; state &#125;&#125;&lt;/button&gt;</span><br><span class="line">   &lt;/div&gt;</span><br><span class="line">   &lt;/template&gt;</span><br></pre></td></tr></table></figure>
+
+### 计算属性函数computed
+
+1. ```
+   &lt;script setup&gt;
+   import &#123; ref &#125; from &#39;vue&#39;
+   import &#123; computed &#125; from &#39;vue&#39;
+   const list = ref([1,2,3,4,5,6,7,8])
+   const computedList = computed(() =&gt; &#123;
+       return list.value.filter(item =&gt; item&gt;2)
+   &#125;)
+   &lt;/script&gt;
+   &lt;template&gt;
+       &lt;div&gt;
+       返回响应数组-&#123;&#123; computedList &#125;&#125;
+       &lt;/div&gt;
+   &lt;/template&gt;
+   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. setTimeout()函数</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+   setTimeout(() =&gt;&#123;
+       list.value.push(9,10)
+   &#125;,3000)
+   在3秒后向list.value数组中添加9,10
+</code></pre>
+<p>   computed()函数特性</p>
+<ul>
+<li><p>出来计算之外不可有其他运算</p>
 </li>
-<li><p>setup写代码，用定义数据 + 函数，然后以对象方式return</p>
+<li><p>计算属性应该是只读的</p>
 </li>
-<li><p><code>&lt;script setup&gt;</code>经过语法糖的封装更简单的使用组合式API</p>
-</li>
-<li><p>setup中的this指向undefined</p>
+</ul>
 </li>
 </ol>
 
